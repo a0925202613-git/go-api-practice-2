@@ -1,0 +1,24 @@
+{
+	"info": {
+		"_postman_id": "go-api-practice-collection",
+		"name": "人魚漢頓夥伴 API",
+		"description": "三麗鷗主題 - 人魚漢頓的夥伴 CRUD 練習（GET / POST / PUT / DELETE）",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:8080" },
+		{ "key": "partnerId", "value": "1" }
+	],
+	"item": [
+		{
+			"name": "Partners（漢頓的夥伴）",
+			"item": [
+				{ "name": "Get All Partners", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/partners", "host": ["{{baseUrl}}"], "path": ["api", "partners"] }, "description": "取得所有夥伴" } },
+				{ "name": "Get Partner by ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/partners/{{partnerId}}", "host": ["{{baseUrl}}"], "path": ["api", "partners", "{{partnerId}}"] }, "description": "依 ID 取得單一夥伴" } },
+				{ "name": "Create Partner", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"小百合\",\n  \"intro\": \"漢頓最好的朋友，章魚女孩，個性樂觀活潑\"\n}" }, "url": { "raw": "{{baseUrl}}/api/partners", "host": ["{{baseUrl}}"], "path": ["api", "partners"] }, "description": "新增夥伴（name 必填，intro 選填）" } },
+				{ "name": "Update Partner", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"小百合\",\n  \"intro\": \"漢頓最好的朋友，章魚女孩\"\n}" }, "url": { "raw": "{{baseUrl}}/api/partners/{{partnerId}}", "host": ["{{baseUrl}}"], "path": ["api", "partners", "{{partnerId}}"] }, "description": "更新指定 ID 的夥伴" } },
+				{ "name": "Delete Partner", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/api/partners/{{partnerId}}", "host": ["{{baseUrl}}"], "path": ["api", "partners", "{{partnerId}}"] }, "description": "刪除指定 ID 的夥伴" } }
+			]
+		}
+	]
+}
