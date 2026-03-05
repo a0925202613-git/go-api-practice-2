@@ -1,4 +1,4 @@
-module go-api-practice
+module go-api-practice-2
 
 go 1.21
 

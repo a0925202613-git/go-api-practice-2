@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"go-api-practice/handlers"
+	"go-api-practice-2/handlers"
 
 	"github.com/gin-gonic/gin"
 )

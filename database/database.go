@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"go-api-practice/config"
+	"go-api-practice-2/config"
 
 	_ "github.com/lib/pq"
 )

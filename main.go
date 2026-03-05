@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"go-api-practice/config"
-	"go-api-practice/database"
-	"go-api-practice/routes"
+	"go-api-practice-2/config"
+	"go-api-practice-2/database"
+	"go-api-practice-2/routes"
 
 	"github.com/gin-gonic/gin"
 )

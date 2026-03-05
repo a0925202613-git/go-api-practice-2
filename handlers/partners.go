@@ -15,8 +15,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"go-api-practice/models"
 	"database/sql"
+	"go-api-practice-2/database"
+	"go-api-practice-2/models"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -50,8 +52,8 @@ func GetPartners(c *gin.Context) {
 	rows, err := database.DB.Query(query)
 	if err != nil {
 		respondError(c, fmt.Errorf("查詢 partner 失敗: %w", err))
-        return
-    }
+		return
+	}
 
 	defer rows.Close()
 
@@ -59,11 +61,11 @@ func GetPartners(c *gin.Context) {
 	for rows.Next() {
 		var p models.Partner
 		if err := rows.Scan(&p.ID, &p.Name, &p.Intro, &p.CreatedAt, &p.UpdatedAt); err != nil {
-            respondError(c, fmt.Errorf("讀取資料失敗: %w", err))
-            return
-        }
-        partners = append(partners, p)
-    }
+			respondError(c, fmt.Errorf("讀取資料失敗: %w", err))
+			return
+		}
+		partners = append(partners, p)
+	}
 
 	c.JSON(http.StatusOK, partners)
 }
@@ -72,12 +74,12 @@ func GetPartners(c *gin.Context) {
 func GetPartnerByID(c *gin.Context) {
 	id, ok := parseID(c, "id")
 	//先確認id存在 才傳進去sql查詢
-	if !ok {                                  
+	if !ok {
 		return
 	}
 	//SELECT 欄位名稱 FROM 表格名稱;
 	query := "SELECT id, name, intro, created_at, updated_at FROM partners WHERE id = $1"
-	
+
 	var p models.Partner
 	err := database.DB.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Intro, &p.CreatedAt, &p.UpdatedAt)
 	if err != nil {
@@ -88,7 +90,7 @@ func GetPartnerByID(c *gin.Context) {
 		respondError(c, fmt.Errorf("查詢單一夥伴失敗: %w", err))
 		return
 	}
-	
+
 	// 請實作：依 id 查單筆，找不到回傳 ErrNotFound
 	c.JSON(http.StatusOK, p)
 }
@@ -106,7 +108,7 @@ func CreatePartner(c *gin.Context) {
 	if err != nil {
 		respondError(c, fmt.Errorf("新增夥伴失敗: %w", err))
 		return
-		}
+	}
 
 	// 請實作：INSERT 進 partners，回傳新增的資料
 	c.JSON(http.StatusOK, input)
@@ -128,16 +130,16 @@ func UpdatePartner(c *gin.Context) {
 	query := "UPDATE partners SET name = $1, intro = $2 WHERE id = $3 RETURNING id, name, intro, created_at, updated_at"
 	err := database.DB.QueryRow(query, input.Name, input.Intro, id).Scan(&input.ID, &input.Name, &input.Intro, &input.CreatedAt, &input.UpdatedAt)
 	if err != nil {
-		if errors.Is (err, sql.ErrNoRows) {
+		if errors.Is(err, sql.ErrNoRows) {
 			respondError(c, ErrNotFound)
 			return
 		}
 		respondError(c, fmt.Errorf("更新單一夥伴失敗: %w", err))
 		return
 	}
-	
+
 	// 請實作：UPDATE 該 id，回傳更新後資料；不存在回傳 ErrNotFound
-	c.JSON(http.StatusOK, input)	
+	c.JSON(http.StatusOK, input)
 }
 
 // DeletePartner DELETE /api/partners/:id - 刪除夥伴
@@ -156,16 +158,16 @@ func DeletePartner(c *gin.Context) {
 	}
 
 	rowsAffecte, err := result.RowsAffected()
-    if err != nil {
-        respondError(c, fmt.Errorf("取得受影響行數失敗: %w", err))
-        return
-    }
+	if err != nil {
+		respondError(c, fmt.Errorf("取得受影響行數失敗: %w", err))
+		return
+	}
 
 	// 請實作：DELETE 該 id，不存在回傳 ErrNotFound
-    if rowsAffecte == 0 {
-        respondError(c, ErrNotFound)
-        return
-    }
-	
+	if rowsAffecte == 0 {
+		respondError(c, ErrNotFound)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "刪除成功"})
 }
