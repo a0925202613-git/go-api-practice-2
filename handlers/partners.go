@@ -128,14 +128,29 @@ func UpdatePartner(c *gin.Context) {
 
 	//UPDATE 表格名稱 SET 欄位名稱 = 新的資料 WHERE 條件;
 	query := "UPDATE partners SET name = $1, intro = $2 WHERE id = $3 RETURNING id, name, intro, created_at, updated_at"
-	err := database.DB.QueryRow(query, input.Name, input.Intro, id).Scan(&input.ID, &input.Name, &input.Intro, &input.CreatedAt, &input.UpdatedAt)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			respondError(c, ErrNotFound)
+
+	if input.Name == "" {
+		// 只更新 intro 欄位
+		query = "UPDATE partners SET intro = $1 WHERE id = $2 RETURNING id, name, intro, created_at, updated_at"
+		err := database.DB.QueryRow(query, input.Intro, id).Scan(&input.ID, &input.Name, &input.Intro, &input.CreatedAt, &input.UpdatedAt)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				respondError(c, ErrNotFound)
+				return
+			}
+			respondError(c, fmt.Errorf("更新單一夥伴失敗: %w", err))
 			return
 		}
-		respondError(c, fmt.Errorf("更新單一夥伴失敗: %w", err))
-		return
+	} else {
+		err := database.DB.QueryRow(query, input.Name, input.Intro, id).Scan(&input.ID, &input.Name, &input.Intro, &input.CreatedAt, &input.UpdatedAt)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				respondError(c, ErrNotFound)
+				return
+			}
+			respondError(c, fmt.Errorf("更新單一夥伴失敗: %w", err))
+			return
+		}
 	}
 
 	// 請實作：UPDATE 該 id，回傳更新後資料；不存在回傳 ErrNotFound
